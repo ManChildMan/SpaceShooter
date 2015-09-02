@@ -28,6 +28,8 @@ public class Enemy : MonoBehaviour {
 		m_laserBeamPrefab = Resources.Load("LaserBeam");
 		target = GameObject.FindGameObjectWithTag ("Player");
 		maxdistance = 2;
+
+		GameObject.Find("Player").GetComponent<SpacecraftController>().RegisterTarget(transform);
 	}
 	
 	
