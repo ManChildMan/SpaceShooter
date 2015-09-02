@@ -11,7 +11,9 @@ public class SpacecraftController : MonoBehaviour {
     public float YawModifier = 30;
     public float VelocityModifier = 5;
     public float LaserCooldown = 1f;
+    public float LaserOffset = 2.2f;
     public float MissileCooldown = 1f;
+    public float MissileOffset = 0.75f;
 
     private float m_velocity = 0f;
     private float m_laserLastFired = 0f;
@@ -129,28 +131,24 @@ public class SpacecraftController : MonoBehaviour {
 
     void FireLaser()
     {
-        Vector3 offset1 = new Vector3(-1f, 0, 0);
-        Vector3 offset2 = new Vector3(1f, 0, 0);
-        GameObject projectile = (GameObject)Instantiate(m_laserBeamPrefab);
-        projectile.GetComponent<Transform>().rotation =
-            transform.rotation;
-        projectile.GetComponent<Transform>().position =
-            transform.position + offset1;
-        GameObject projectile2 = (GameObject)Instantiate(m_laserBeamPrefab);
-        projectile2.GetComponent<Transform>().rotation =
-            transform.rotation;
-        projectile2.GetComponent<Transform>().position =
-            transform.position + offset2;
+        GameObject laser0 = (GameObject)Instantiate(m_laserBeamPrefab);
+        laser0.transform.rotation = transform.rotation;
+        laser0.transform.position = transform.position +
+            transform.right * LaserOffset;
+
+        GameObject laser1 = (GameObject)Instantiate(m_laserBeamPrefab);
+        laser1.transform.rotation = transform.rotation;
+        laser1.transform.position = transform.position - 
+            transform.right * LaserOffset;
     }
 
     void FireMissile()
     {
-        Vector3 offset1 = new Vector3(0, 0, 0);
-        GameObject projectile = (GameObject)Instantiate(m_missilePrefab);
-        //projectile.GetComponent<Transform>().rotation =
-        //    transform.rotation;
-        projectile.GetComponent<Transform>().position =
-            transform.position + offset1;
-        projectile.GetComponent<Missile>().SetTarget(m_targets[m_target]);
+        GameObject missile = (GameObject)Instantiate(m_missilePrefab);
+        missile.transform.rotation = transform.rotation;
+        missile.transform.position = transform.position - 
+            transform.up * MissileOffset;
+        missile.GetComponent<Missile>().SetTarget(m_targets[m_target]);
+        missile.GetComponent<Missile>().SetVelocity(m_velocity);
     }
 }
