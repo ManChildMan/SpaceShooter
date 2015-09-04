@@ -15,11 +15,11 @@ public class LaserBeam : MonoBehaviour {
         transform.position += transform.forward * Velocity;     
 	}
 
-    void OnTriggerEnter(Collider collider)
+    /*void OnTriggerEnter(Collider collider)
     {
         GameObject explosion = (GameObject)Instantiate(m_explosionPrefab);
         explosion.GetComponent<Transform>().position =
             gameObject.transform.position;
         Destroy(gameObject, 0);
-    }
+    }*/
 }

@@ -4,14 +4,13 @@ using System.Collections;
 public class Enemy : MonoBehaviour {
 
 	//------------Variables----------------//
-	private GameObject target;
+	private Transform target;
 	public int moveSpeed;
-	public int rotationSpeed;
 	public int maxdistance;
 	private Transform myTransform;
-	private GameObject Level;
+
 	public float Timer;
-	public float LaserCooldown = 1f;
+	public float LaserCooldown = 2f;
 	public float LaserOffset = 2.2f;
 	private float m_laserLastFired = 0f;
 	private UnityEngine.Object m_laserBeamPrefab;
@@ -26,10 +25,10 @@ public class Enemy : MonoBehaviour {
 	void Start ()
 	{
 		m_laserBeamPrefab = Resources.Load("LaserBeam");
-		target = GameObject.FindGameObjectWithTag ("Player");
 		maxdistance = 2;
 
 		GameObject.Find("Player").GetComponent<SpacecraftController>().RegisterTarget(transform);
+		target = GameObject.FindGameObjectWithTag ("Player").transform;
 	}
 	
 	
@@ -37,25 +36,52 @@ public class Enemy : MonoBehaviour {
 	{
 		Timer += Time.deltaTime;
 		
-		if (Vector3.Distance(target.gameObject.transform.position, myTransform.position) > maxdistance)
-		{
-			// Get a direction vector from us to the target
-			Vector3 dir = target.gameObject.transform.position - myTransform.position;
-			
-			// Normalize it so that it's a unit direction vector
-			dir.Normalize();
+		Vector3 dir = (target.position - transform.position)	.normalized;
+		RaycastHit hit;
 
-			// The step size is equal to speed times frame time.
-			float step = moveSpeed * Time.deltaTime;
-			
-			Vector3 newDir = Vector3.RotateTowards(transform.forward, dir, step, 0.0F);
-
-			// Move our position a step closer to the target.
-			transform.rotation = Quaternion.LookRotation(newDir);
-			
-			// Move ourselves in that direction
-			myTransform.position += dir * moveSpeed * Time.deltaTime;
+		if(Physics.Raycast(transform.position, transform.forward, out hit, 20)){
+			if(hit.transform != transform){
+				dir += hit.normal * moveSpeed;
+			}
 		}
+
+		Vector3 leftR = transform.position;
+		Vector3 rightR = transform.position;
+		Vector3 topR = transform.position;
+		Vector3 bottomR = transform.position;
+
+		leftR.x -= 5;
+		rightR.x += 5;
+		topR.y += 2;
+		bottomR.y += 2;
+
+		if(Physics.Raycast(leftR, transform.forward, out hit, 20)){
+			if(hit.transform != transform){
+				dir += hit.normal * moveSpeed;
+			}
+		}
+
+		if(Physics.Raycast(rightR, transform.forward, out hit, 20)){
+			if(hit.transform != transform){
+				dir += hit.normal * moveSpeed;
+			}
+		}
+
+		if(Physics.Raycast(topR, transform.forward, out hit, 20)){
+			if(hit.transform != transform){
+				dir += hit.normal * moveSpeed;
+			}
+		}
+
+		if(Physics.Raycast(bottomR, transform.forward, out hit, 20)){
+			if(hit.transform != transform){
+				dir += hit.normal * moveSpeed;
+			}
+		}
+
+		Quaternion desiredRotation = Quaternion.LookRotation (dir);
+		transform.rotation = Quaternion.Slerp (transform.rotation, desiredRotation, Time.deltaTime);
+		transform.position += transform.forward * 20 * Time.deltaTime;
 
 		if (Vector3.Distance (target.gameObject.transform.position, myTransform.position) > maxdistance && Timer > LaserCooldown) 
 		{
