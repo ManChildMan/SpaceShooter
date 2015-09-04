@@ -54,7 +54,7 @@ public class EnemyAI : MonoBehaviour {
 
 		m_laserBeamPrefab = Resources.Load("LaserBeam");
 		
-		GameObject.Find("Player").GetComponent<SpacecraftController>().RegisterTarget(transform);
+		GameObject.Find("Player").GetComponent<Player>().RegisterTarget(transform);
 	}
 
 	void Update ()

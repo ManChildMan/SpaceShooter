@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System;
 
 public class TargetIndicator : MonoBehaviour {
     
@@ -69,8 +70,13 @@ public class TargetIndicator : MonoBehaviour {
 
         }
 
+        // Get angle from forward vector to target.
+        float angle = Vector3.Angle(m_player.forward, m_target.position );
 
-        if (targetInFront)
+
+        Vector3 screenPoint = Camera.main.WorldToScreenPoint(m_target.position);
+        if (targetInFront && screenPoint.x > 0 + 20 && screenPoint.y > 0 + 20 &&
+            screenPoint.x < Screen.width - 20 && screenPoint.y < Screen.height -20)
         {
             Vector3 displacement = (m_target.transform.position -
                 transform.parent.position).normalized;
@@ -78,8 +84,61 @@ public class TargetIndicator : MonoBehaviour {
             m_targetInfo.transform.position = Camera.main.WorldToScreenPoint(transform.position);
             m_targetInfo.GetComponent<Text>().text = m_target.GetComponent<Target>().Label + "\n" + (m_target.transform.position -
                transform.parent.position).magnitude.ToString("n2");
+
         }
-   
+        else
+        {
+            // Cast ray from target onto sphere collider at players 0, 0, 1.
+            RaycastHit sphereHit;
+            Physics.Raycast(m_target.position, (GameObject.Find("SphereCollider").transform.position -
+                    m_target.position).normalized, out sphereHit, float.MaxValue, m_sphereColliderMask);
+            if (sphereHit.collider != null)
+            {
+                // Cast ray from target onto sphere collider hit point to plane
+                // collider at players 0, 0, 1.
+                RaycastHit boxHit;
+                Physics.Raycast(sphereHit.point, targetInFront ? transform.parent.forward : -transform.parent.forward,
+                    out boxHit, float.MaxValue, m_boxColliderMask);
+                if (boxHit.collider != null)
+                {
+                    //Vector3 dd = (boxHit.point - transform.position).normalized;
+                    //transform.position = boxHit.point;
+                    Vector3 displacement = (boxHit.point -
+                        transform.parent.position).normalized * 2;
+
+
+                    //float a = Vector3.Angle(transform.parent.right, displacement) * Mathf.Deg2Rad;
+                    //double x = 0.5f * Math.Cos(a) + transform.parent.position.x;
+                    //double y = 0.5f * Math.Sin(a) + transform.parent.position.y;
+                    //displacement = new Vector3((float)x, (float)y, displacement.z);
+
+                    transform.position = transform.parent.position + displacement;
+                    m_targetInfo.transform.position = Camera.main.WorldToScreenPoint(transform.position);
+                    m_targetInfo.GetComponent<Text>().text = m_target.GetComponent<Target>().Label + "\n" + (m_target.transform.position -
+                       transform.parent.position).magnitude.ToString("n2");
+                }
+                else
+                {
+                           Physics.Raycast(sphereHit.point, targetInFront ? -transform.parent.forward : transform.parent.forward,
+                    out boxHit, float.MaxValue, m_boxColliderMask);
+                           if (boxHit.collider != null)
+                           {
+                               Vector3 displacement = (boxHit.point -
+                                   transform.parent.position).normalized * 2;
+                               //float a = Vector3.Angle(transform.parent.right, displacement) * Mathf.Deg2Rad;
+                               //double x = 1 * Math.Cos(a) + transform.parent.position.x;
+                               //double y = 1 * Math.Sin(a) + transform.parent.position.y;
+                               //displacement = new Vector3((float)x, (float)y, displacement.z);
+
+                               transform.position = transform.parent.position + displacement;
+                               m_targetInfo.transform.position = Camera.main.WorldToScreenPoint(transform.position);
+                               m_targetInfo.GetComponent<Text>().text = m_target.GetComponent<Target>().Label + "\n" + (m_target.transform.position -
+                                  transform.parent.position).magnitude.ToString("n2");
+                           }
+                }
+            }
+        }
+
 
 	}
 }
