@@ -19,6 +19,7 @@ public class Enemy : MonoBehaviour {
 	void Awake()
 	{
 		myTransform = transform;
+        target = GameObject.Find("Player").transform;
 	}
 	
 	
@@ -27,8 +28,8 @@ public class Enemy : MonoBehaviour {
 		m_laserBeamPrefab = Resources.Load("LaserBeam");
 		maxdistance = 2;
 
-		GameObject.Find("Player").GetComponent<SpacecraftController>().RegisterTarget(transform);
-		target = GameObject.FindGameObjectWithTag ("Player").transform;
+		GameObject.Find("Player").GetComponent<Player>().RegisterTarget(transform);
+
 	}
 	
 	
@@ -92,14 +93,14 @@ public class Enemy : MonoBehaviour {
 
 	void FireLaser()
 	{
-		GameObject laser0 = (GameObject)Instantiate(m_laserBeamPrefab);
-		laser0.transform.rotation = transform.rotation;
-		laser0.transform.position = transform.position +
-			transform.right * LaserOffset;
+        //GameObject laser0 = (GameObject)Instantiate(m_laserBeamPrefab);
+        //laser0.transform.rotation = transform.rotation;
+        //laser0.transform.position = transform.position +
+        //    transform.right * LaserOffset;
 		
-		GameObject laser1 = (GameObject)Instantiate(m_laserBeamPrefab);
-		laser1.transform.rotation = transform.rotation;
-		laser1.transform.position = transform.position - 
-			transform.right * LaserOffset;
+        //GameObject laser1 = (GameObject)Instantiate(m_laserBeamPrefab);
+        //laser1.transform.rotation = transform.rotation;
+        //laser1.transform.position = transform.position - 
+        //    transform.right * LaserOffset;
 	}
 }
