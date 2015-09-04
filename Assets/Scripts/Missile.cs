@@ -13,6 +13,7 @@ public class Missile : MonoBehaviour {
     private float m_lifetime = 0f;
     private Transform m_target = null;
     private UnityEngine.Object m_explosionPrefab;
+
     void Start()
     {
         m_explosionPrefab = Resources.Load("Explosion");
@@ -39,9 +40,7 @@ public class Missile : MonoBehaviour {
         // 
         m_velocity += Acceleration * Time.deltaTime;
         m_velocity = Mathf.Clamp(m_velocity, MinVelocity, MaxVelocity);
-
         transform.position += transform.forward * m_velocity;
-
     }
 
     public void SetTarget(Transform transform)
@@ -56,11 +55,12 @@ public class Missile : MonoBehaviour {
 
     void OnTriggerEnter(Collider collider)
     {
-        if (collider.gameObject.transform == m_target)
+        // Ignore triggers fired by situation colliders.
+        if (!collider.CompareTag("Situation"))
         {
+            // Instantiate an explosion prefab and destroy the missile.
             GameObject explosion = (GameObject)Instantiate(m_explosionPrefab);
-            explosion.GetComponent<Transform>().position = 
-                gameObject.transform.position;
+            explosion.GetComponent<Transform>().position = gameObject.transform.position;
             Destroy(gameObject, 0);
         }
     }
