@@ -13,7 +13,15 @@ public class Enemy : MonoBehaviour {
 	void Awake()
 	{
 		myTransform = transform;
-        target = GameObject.Find("Player").transform;
+
+		int randomPick = Mathf.Abs(Random.Range(0,10));
+
+
+		if (randomPick > 3) {
+			target = GameObject.Find ("Player").transform;
+		} else {
+			target = GameObject.Find ("spacestation_01").transform;
+		}
 	}
 	
 	
