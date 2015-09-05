@@ -43,6 +43,9 @@ public class Laser : MonoBehaviour
     IEnumerator FireLaser()
     {
         m_lineRenderer.enabled = true;
+		AudioSource audio = GetComponent<AudioSource>();
+		audio.Play();
+
         while (Input.GetButton("Fire") && LaserTemperature < LaserTemperatureMax)
         {
             RaycastHit hit;
