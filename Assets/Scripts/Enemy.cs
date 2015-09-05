@@ -14,14 +14,10 @@ public class Enemy : MonoBehaviour {
 	{
 		myTransform = transform;
 
-		int randomPick = Mathf.Abs(Random.Range(0,10));
+		
 
         m_explosionPrefab = Resources.Load("LargeExplosion");
-		if (randomPick > 3) {
-			target = GameObject.Find ("Player").transform;
-		} else {
-			target = GameObject.Find ("spacestation_01").transform;
-		}
+        FindTarget();
 	}
 	
 	
@@ -31,10 +27,26 @@ public class Enemy : MonoBehaviour {
 
 		GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().RegisterTarget(this.gameObject.transform);
 	}
-	
+
+    void FindTarget()
+    {
+        int randomPick = Mathf.Abs(Random.Range(0, 10));
+        if (randomPick > 3)
+        {
+            target = GameObject.Find("Player").transform;
+        }
+        else
+        {
+            target = GameObject.Find("spacestation_01").transform;
+        }
+    }
 	
 	void Update ()
-	{	
+	{
+        if (target == null)
+        {
+            return;
+        }
 		Vector3 dir = (target.position - transform.position)	.normalized;
 		RaycastHit hit;
 

@@ -10,47 +10,45 @@ public class Player : MonoBehaviour {
     public float RollModifier = 30;
     public float YawModifier = 30;
     public float VelocityModifier = 5;
-
     public float MissileCooldown = 1f;
     public float MissileOffset = 0.75f;
-
-
-
+    public float MissileThreshold = 1;
 
     private float m_velocity = 0f;
-
     private float m_missileLastFired = 0f;
     private bool m_missileMode = false;
-    private bool m_launchAuthorised = false;
+    private bool m_isLaunchAuthorised = false;
     private List<Transform> m_targets = new List<Transform>();
-
     private int m_target = -1;
-    private UnityEngine.Object m_laserBeamPrefab;
-    private UnityEngine.Object m_missilePrefab;
-    private UnityEngine.Object m_targetIndicatorPrefab;
-    private Transform m_targetReticle;
-    private Transform m_launchAuthorisedText;
+    private UnityEngine.Object m_missile;
+    private UnityEngine.Object m_indicator;
+    private Transform m_reticle;
+    private Transform m_launchAuthorised;
+    private MeshRenderer m_reticleRenderer;
+    private Color m_reticleDefaultColor;
 
     void Awake()
     {
-        m_laserBeamPrefab = Resources.Load("LaserBeam");
-        m_missilePrefab = Resources.Load("Missile");
-        m_targetIndicatorPrefab = Resources.Load("TargetIndicator");
+        m_missile = Resources.Load("Missile");
+        m_indicator = Resources.Load("TargetIndicator");
     }
 
 	void Start () 
     {
-        m_targetReticle = GameObject.Find("TargetReticle").transform;
-        m_targetReticle.gameObject.SetActive(false);
-        m_launchAuthorisedText = GameObject.Find("LaunchAuthorised").transform;
-        m_launchAuthorisedText.gameObject.SetActive(false);
-        m_targetReticleRenderer = m_targetReticle.GetComponent<MeshRenderer>();
-        m_targetReticleOldColor = m_targetReticleRenderer.material.color;
+
+
+        m_launchAuthorised = GameObject.Find("LaunchAuthorised").transform;
+        m_launchAuthorised.gameObject.SetActive(false);
+
+        m_reticle = GameObject.Find("TargetReticle").transform;
+        m_reticle.gameObject.SetActive(false);
+        m_reticleRenderer = m_reticle.GetComponent<MeshRenderer>();
+        m_reticleDefaultColor = m_reticleRenderer.material.color;
+
 	}
 		
 
-    private MeshRenderer m_targetReticleRenderer;
-    private Color m_targetReticleOldColor;
+
 
 	void Update () 
     {
@@ -69,9 +67,9 @@ public class Player : MonoBehaviour {
             m_missileMode = !m_missileMode;
             if (m_missileMode == true)
             {
-                m_targetReticle.gameObject.SetActive(true);
+                m_reticle.gameObject.SetActive(true);
             }
-            else m_targetReticle.gameObject.SetActive(false);
+            else m_reticle.gameObject.SetActive(false);
         }
 
         if (m_missileMode)
@@ -80,31 +78,30 @@ public class Player : MonoBehaviour {
             {
                 Vector3 displacement = (m_targets[m_target].position -
                     transform.position).normalized;
-                m_targetReticle.transform.position = transform.position +
+                m_reticle.transform.position = transform.position +
                     displacement;
-
                 float angle = Vector3.Angle(transform.forward, displacement);
-                if (angle < 1)
+                if (angle < MissileThreshold)
                 {
-                    m_targetReticleRenderer.material.color = Color.red;
-                    m_launchAuthorised = true;
-                    m_launchAuthorisedText.gameObject.SetActive(true);
+                    m_isLaunchAuthorised = true;
+                    m_launchAuthorised.gameObject.SetActive(true);
+                    m_reticleRenderer.material.color = Color.red;
                 }
                 else
                 {
-                    m_targetReticleRenderer.material.color = m_targetReticleOldColor;
-                    m_launchAuthorised = false;
-                    m_launchAuthorisedText.gameObject.SetActive(false);
+                    m_isLaunchAuthorised = false;
+                    m_launchAuthorised.gameObject.SetActive(false);
+                    m_reticleRenderer.material.color = m_reticleDefaultColor;
                 }
             }
         }
         else
         {
-            m_launchAuthorised = false;
-            m_launchAuthorisedText.gameObject.SetActive(false);
+            m_isLaunchAuthorised = false;
+            m_launchAuthorised.gameObject.SetActive(false);
         }
 
-        if (Input.GetButton("Fire1") && m_missileLastFired > MissileCooldown && m_launchAuthorised)
+        if (Input.GetButton("Fire1") && m_missileLastFired > MissileCooldown && m_isLaunchAuthorised)
         {
             FireMissile();
             m_missileLastFired = 0;
@@ -139,14 +136,10 @@ public class Player : MonoBehaviour {
                 " (" + (m_targets[m_target].transform.position - transform.position).magnitude + ")";
 	}
 
-
-
-
-
     public void RegisterTarget(Transform transform)
     {
         m_targets.Add(transform);
-        GameObject indicator = (GameObject)Instantiate(m_targetIndicatorPrefab);
+        GameObject indicator = (GameObject)Instantiate(m_indicator);
         indicator.GetComponent<TargetIndicator>().SetTarget(transform);
 
     }
@@ -177,12 +170,12 @@ public class Player : MonoBehaviour {
     void UnlockTarget()
     {
         m_target = -1;
-        m_targetReticle.position = transform.position + transform.forward;
+        m_reticle.position = transform.position + transform.forward;
     }
 
     void FireMissile()
     {
-        GameObject missile = (GameObject)Instantiate(m_missilePrefab);
+        GameObject missile = (GameObject)Instantiate(m_missile);
         missile.transform.rotation = transform.rotation;
         missile.transform.position = transform.position - 
             transform.up * MissileOffset;
