@@ -99,6 +99,8 @@ public class Enemy : MonoBehaviour {
             GameObject explosion = (GameObject)Instantiate(m_explosionPrefab);
             explosion.GetComponent<Transform>().position = transform.position;
             GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().UnregisterTarget(this.gameObject.transform);
+			GameObject scoreCounter = GameObject.Find("ScoreCounter");
+			scoreCounter.GetComponent<ScoreScript>().increaseScore(1);
             Destroy(gameObject, 0);
         }
 	}
