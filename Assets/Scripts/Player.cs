@@ -9,6 +9,7 @@ public class Player : MonoBehaviour {
     public float PitchModifier = 30;
     public float RollModifier = 30;
     public float YawModifier = 30;
+    public float Velocity = 0f;
     public float VelocityModifier = 5;
     public float MissileCooldown = 1f;
     public float MissileOffset = 0.75f;
@@ -123,14 +124,11 @@ public class Player : MonoBehaviour {
 
         m_velocity += velInput * VelocityModifier * Time.deltaTime;
         m_velocity = Mathf.Clamp(m_velocity, MinSpeed, MaxSpeed);
+        Velocity = m_velocity;
 
         transform.position += transform.forward * m_velocity;
 
         // DEBUG 
-        GameObject.Find("PositionValue").GetComponent<Text>().text =
-            transform.position.ToString();
-        GameObject.Find("VelocityValue").GetComponent<Text>().text = 
-            m_velocity.ToString() + " units per second";
         GameObject.Find("TargetValue").GetComponent<Text>().text =
             m_target == -1 ? "None" : m_targets[m_target].gameObject.name +
                 " (" + (m_targets[m_target].transform.position - transform.position).magnitude + ")";

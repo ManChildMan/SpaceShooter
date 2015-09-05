@@ -56,12 +56,22 @@ public class Missile : MonoBehaviour {
     void OnTriggerEnter(Collider collider)
     {
         // Ignore triggers fired by situation colliders.
-        if (!collider.CompareTag("Situation"))
+        if (!collider.CompareTag("Situation") && !collider.CompareTag("Player"))
         {
             // Instantiate an explosion prefab and destroy the missile.
             GameObject explosion = (GameObject)Instantiate(m_explosionPrefab);
             explosion.GetComponent<Transform>().position = gameObject.transform.position;
             Destroy(gameObject, 0);
+
+            if(collider.CompareTag("SpaceStation"))
+            {
+                GameObject.Find("spacestation_01").GetComponent<Target>().Health -= 50;
+            }
+            if (collider.CompareTag("Enemy"))
+            {
+                collider.transform.GetComponent<Target>().Health = -1;
+            }
+
         }
     }
 }

@@ -15,6 +15,9 @@ public class EnemyLaser : MonoBehaviour {
 	public LayerMask LayerMask;
 	
 	MeshRenderer renderer;
+
+    private Target m_playerTarget;
+    private Target m_stationTarget;
 	
 	
 	private LineRenderer m_lineRenderer;
@@ -25,6 +28,9 @@ public class EnemyLaser : MonoBehaviour {
 		m_explosionPrefab = Resources.Load("Explosion");
 		m_lineRenderer = gameObject.GetComponentInChildren<LineRenderer>();
 		m_lineRenderer.enabled = false;
+
+        m_playerTarget = GameObject.Find("Player").GetComponent<Target>();
+        m_stationTarget = GameObject.Find("spacestation_01").GetComponent<Target>();
 	}
 	
 	void Update()
@@ -52,7 +58,14 @@ public class EnemyLaser : MonoBehaviour {
 			{
 				GameObject explosion = (GameObject)Instantiate(m_explosionPrefab);
 				explosion.GetComponent<Transform>().position = hit.point;
-				
+                if (hit.transform.CompareTag("Player"))
+                {
+                    m_playerTarget.Health -= 5;
+                }
+                if (hit.transform.CompareTag("SpaceStation"))
+                {
+                    m_stationTarget.Health -= 5;
+                }
 				m_lineRenderer.SetPosition(1, new Vector3(0, 0, hit.distance));
 				Timer = 0.0f;
 			}
