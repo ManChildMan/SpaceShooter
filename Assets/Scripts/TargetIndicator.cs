@@ -12,6 +12,7 @@ public class TargetIndicator : MonoBehaviour {
     public Material EnemyMaterial;
     private Transform m_player;
     private Transform m_target;
+    private Target m_targetScript;
     private int m_sphereColliderMask;
     private int m_boxColliderMask;
 
@@ -38,15 +39,16 @@ public class TargetIndicator : MonoBehaviour {
     public void SetTarget(Transform transform)
     {      
         m_target = transform;
-        if (m_target.CompareTag("Neutral"))
+        m_targetScript = m_target.GetComponent<Target>();
+        if (m_targetScript.TargetType == TargetType.Neutral)
         {
             GetComponentInChildren<MeshRenderer>().material = NeutralMaterial;          
         }
-        if (m_target.CompareTag("Friendly"))
+        if (m_targetScript.TargetType == TargetType.Friendly)
         {
             GetComponentInChildren<MeshRenderer>().material = FriendlyMaterial;
         } 
-        if (m_target.CompareTag("Enemy"))
+        if (m_targetScript.TargetType == TargetType.Enemy)
         {
             GetComponentInChildren<MeshRenderer>().material = EnemyMaterial;
         }
@@ -83,7 +85,7 @@ public class TargetIndicator : MonoBehaviour {
             transform.position = transform.parent.position + displacement;
             m_targetInfo.transform.position = Camera.main.WorldToScreenPoint(transform.position);
             m_targetInfo.GetComponent<Text>().text = m_target.GetComponent<Target>().Label + "\n" + (m_target.transform.position -
-               transform.parent.position).magnitude.ToString("n2");
+               transform.parent.position).magnitude.ToString("n2") + "\n" + m_target.GetComponent<Target>().Health;
 
         }
         else
@@ -115,7 +117,7 @@ public class TargetIndicator : MonoBehaviour {
                     transform.position = transform.parent.position + displacement;
                     m_targetInfo.transform.position = Camera.main.WorldToScreenPoint(transform.position);
                     m_targetInfo.GetComponent<Text>().text = m_target.GetComponent<Target>().Label + "\n" + (m_target.transform.position -
-                       transform.parent.position).magnitude.ToString("n2");
+                       transform.parent.position).magnitude.ToString("n2") + "\n" + m_target.GetComponent<Target>().Health;
                 }
                 else
                 {
@@ -133,7 +135,7 @@ public class TargetIndicator : MonoBehaviour {
                                transform.position = transform.parent.position + displacement;
                                m_targetInfo.transform.position = Camera.main.WorldToScreenPoint(transform.position);
                                m_targetInfo.GetComponent<Text>().text = m_target.GetComponent<Target>().Label + "\n" + (m_target.transform.position -
-                                  transform.parent.position).magnitude.ToString("n2");
+                                  transform.parent.position).magnitude.ToString("n2") + "\n" + m_target.GetComponent<Target>().Health;
                            }
                 }
             }
