@@ -8,12 +8,6 @@ public class Enemy : MonoBehaviour {
 	public int moveSpeed;
 	public int maxdistance;
 	private Transform myTransform;
-
-	public float Timer;
-	public float LaserCooldown = 2f;
-	public float LaserOffset = 2.2f;
-	private float m_laserLastFired = 0f;
-	private UnityEngine.Object m_laserBeamPrefab;
 	//------------------------------------//    
 	
 	void Awake()
@@ -25,7 +19,6 @@ public class Enemy : MonoBehaviour {
 	
 	void Start ()
 	{
-		m_laserBeamPrefab = Resources.Load("LaserBeam");
 		maxdistance = 2;
 
 		GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().RegisterTarget(this.gameObject.transform);
@@ -34,9 +27,7 @@ public class Enemy : MonoBehaviour {
 	
 	
 	void Update ()
-	{
-		Timer += Time.deltaTime;
-		
+	{	
 		Vector3 dir = (target.position - transform.position)	.normalized;
 		RaycastHit hit;
 
@@ -83,24 +74,5 @@ public class Enemy : MonoBehaviour {
 		Quaternion desiredRotation = Quaternion.LookRotation (dir);
 		transform.rotation = Quaternion.Slerp (transform.rotation, desiredRotation, Time.deltaTime);
 		transform.position += transform.forward * 20 * Time.deltaTime;
-
-		if (Vector3.Distance (target.gameObject.transform.position, myTransform.position) > maxdistance && Timer > LaserCooldown) 
-		{
-			FireLaser();
-			Timer = 0.0f;
-		}
-	}
-
-	void FireLaser()
-	{
-        //GameObject laser0 = (GameObject)Instantiate(m_laserBeamPrefab);
-        //laser0.transform.rotation = transform.rotation;
-        //laser0.transform.position = transform.position +
-        //    transform.right * LaserOffset;
-		
-        //GameObject laser1 = (GameObject)Instantiate(m_laserBeamPrefab);
-        //laser1.transform.rotation = transform.rotation;
-        //laser1.transform.position = transform.position - 
-        //    transform.right * LaserOffset;
 	}
 }
