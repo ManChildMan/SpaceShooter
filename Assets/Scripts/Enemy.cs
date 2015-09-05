@@ -9,14 +9,14 @@ public class Enemy : MonoBehaviour {
 	public int maxdistance;
 	private Transform myTransform;
 	//------------------------------------//    
-	
+    private UnityEngine.Object m_explosionPrefab;
 	void Awake()
 	{
 		myTransform = transform;
 
 		int randomPick = Mathf.Abs(Random.Range(0,10));
 
-
+        m_explosionPrefab = Resources.Load("LargeExplosion");
 		if (randomPick > 3) {
 			target = GameObject.Find ("Player").transform;
 		} else {
@@ -81,5 +81,13 @@ public class Enemy : MonoBehaviour {
 		Quaternion desiredRotation = Quaternion.LookRotation (dir);
 		transform.rotation = Quaternion.Slerp (transform.rotation, desiredRotation, Time.deltaTime);
 		transform.position += transform.forward * 20 * Time.deltaTime;
+
+        if (GetComponent<Target>().Health < 0)
+        {
+            GameObject explosion = (GameObject)Instantiate(m_explosionPrefab);
+            explosion.GetComponent<Transform>().position = transform.position;
+            GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().UnregisterTarget(this.gameObject.transform);
+            Destroy(gameObject, 0);
+        }
 	}
 }

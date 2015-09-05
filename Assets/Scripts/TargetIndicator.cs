@@ -57,7 +57,12 @@ public class TargetIndicator : MonoBehaviour {
 
 	void Update ()
     {
-        if (m_target == null) return;
+        if (m_target == null)
+        {
+            Destroy(m_targetInfo.gameObject, 0);
+            Destroy(gameObject, 0);
+            return;
+        }
 
         bool targetInFront = false;
         Vector3 direction = (m_target.position - transform.position).normalized;

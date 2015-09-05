@@ -23,7 +23,7 @@ public class Player : MonoBehaviour {
     private bool m_missileMode = false;
     private bool m_launchAuthorised = false;
     private List<Transform> m_targets = new List<Transform>();
-    private List<Transform> m_targetIndicators = new List<Transform>();
+
     private int m_target = -1;
     private UnityEngine.Object m_laserBeamPrefab;
     private UnityEngine.Object m_missilePrefab;
@@ -137,18 +137,24 @@ public class Player : MonoBehaviour {
         GameObject.Find("TargetValue").GetComponent<Text>().text =
             m_target == -1 ? "None" : m_targets[m_target].gameObject.name +
                 " (" + (m_targets[m_target].transform.position - transform.position).magnitude + ")";
-	}   
+	}
+
+
+
+
 
     public void RegisterTarget(Transform transform)
     {
         m_targets.Add(transform);
-        GameObject targetIndicator = (GameObject)Instantiate(m_targetIndicatorPrefab);
-        targetIndicator.GetComponent<TargetIndicator>().SetTarget(transform);
+        GameObject indicator = (GameObject)Instantiate(m_targetIndicatorPrefab);
+        indicator.GetComponent<TargetIndicator>().SetTarget(transform);
+
     }
 
     public void UnregisterTarget(Transform transform)
     {
-        m_targets.Add(transform);
+        m_targets.Remove(transform);
+        Destroy(transform.gameObject, 0);
     }
 
     void CycleTargets()

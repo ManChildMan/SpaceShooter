@@ -51,10 +51,14 @@ public class Laser : MonoBehaviour
                 GameObject explosion = (GameObject)Instantiate(m_explosionPrefab);
                 explosion.GetComponent<Transform>().position = hit.point;
 
-                //if (hit.transform.CompareTag("SpaceStation") || hit.transform.CompareTag("Enemy"))
-                //{
-                //    hit.transform.GetComponent<Target>().Health -= 5f;
-                //}
+                if (hit.transform.CompareTag("SpaceStation"))
+                {
+                    hit.transform.parent.parent.GetComponent<Target>().Health -= 5f;
+                }
+                if (hit.transform.CompareTag("Enemy"))
+                {
+                    hit.transform.GetComponent<Target>().Health -= 5f;
+                }
 
 
                 m_lineRenderer.SetPosition(1, new Vector3(0, 0, hit.distance));
