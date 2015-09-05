@@ -14,9 +14,6 @@ public class Player : MonoBehaviour {
     public float MissileCooldown = 1f;
     public float MissileOffset = 0.75f;
 
-
-
-
     private float m_velocity = 0f;
 
     private float m_missileLastFired = 0f;

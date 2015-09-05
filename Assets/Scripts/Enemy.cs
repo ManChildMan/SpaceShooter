@@ -28,7 +28,7 @@ public class Enemy : MonoBehaviour {
 		m_laserBeamPrefab = Resources.Load("LaserBeam");
 		maxdistance = 2;
 
-		GameObject.Find("Player").GetComponent<Player>().RegisterTarget(transform);
+		GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().RegisterTarget(this.gameObject.transform);
 
 	}
 	
