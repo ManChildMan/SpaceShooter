@@ -10,11 +10,14 @@ public class Enemy : MonoBehaviour {
 	private Transform myTransform;
 	//------------------------------------//    
     private UnityEngine.Object m_explosionPrefab;
+
+
+
 	void Awake()
 	{
 		myTransform = transform;
+        
 
-		
 
         m_explosionPrefab = Resources.Load("LargeExplosion");
         FindTarget();
@@ -30,15 +33,21 @@ public class Enemy : MonoBehaviour {
 
     void FindTarget()
     {
-        int randomPick = Mathf.Abs(Random.Range(0, 10));
-        if (randomPick > 3)
+
+        if (GameObject.Find("Player") && GameObject.Find("spacestation_01"))
         {
-            target = GameObject.Find("Player").transform;
+
+            int randomPick = Mathf.Abs(Random.Range(0, 10));
+            if (randomPick > 3)
+            {
+                target = GameObject.Find("Player").transform;
+            }
+            else
+            {
+                target = GameObject.Find("spacestation_01").transform;
+            }
         }
-        else
-        {
-            target = GameObject.Find("spacestation_01").transform;
-        }
+        else target = null;
     }
 	
 	void Update ()
@@ -96,12 +105,13 @@ public class Enemy : MonoBehaviour {
 
         if (GetComponent<Target>().Health < 0)
         {
+
             GameObject explosion = (GameObject)Instantiate(m_explosionPrefab);
             explosion.GetComponent<Transform>().position = transform.position;
             GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().UnregisterTarget(this.gameObject.transform);
 			GameObject scoreCounter = GameObject.Find("ScoreCounter");
-			scoreCounter.GetComponent<ScoreScript>().increaseScore(1);
-            Destroy(gameObject, 0);
+			scoreCounter.GetComponent<Score>().increaseScore(100);
+            Destroy(gameObject, 3);
         }
 	}
 }

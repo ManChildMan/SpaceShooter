@@ -1,11 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-public enum TargetType
-{
-    Friendly,
-    Neutral,
-    Enemy
-}
+
 public class Target : MonoBehaviour 
 {
     public string Label = "unknown";

@@ -151,13 +151,3 @@ public class TargetIndicator : MonoBehaviour {
         }
 	}
 }
-
-
-                   //Vector3 displacement = (boxHit.point -
-                   //                transform.parent.position).normalized;
-                   //            //float a = Vector3.Angle(transform.parent.right, displacement) * Mathf.Deg2Rad;
-                   //            //double x = 1 * Math.Cos(a) + transform.parent.position.x;
-                   //            //double y = 1 * Math.Sin(a) + transform.parent.position.y;
-                   //            //displacement = new Vector3((float)x, (float)y, displacement.z);
-
-                   //            transform.position = transform.parent.position + displacement;

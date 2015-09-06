@@ -29,6 +29,12 @@ public class Player : MonoBehaviour {
     private MeshRenderer m_reticleRenderer;
     private Color m_reticleDefaultColor;
 
+
+    private Text m_missileStatus;
+    private Text m_missilesLeft;
+    private Color m_oldMissileTextColor;
+    private int m_missileCount = 6;
+
 	private GameObject HUD;
 
     void Awake()
@@ -50,10 +56,18 @@ public class Player : MonoBehaviour {
         m_reticleRenderer = m_reticle.GetComponent<MeshRenderer>();
         m_reticleDefaultColor = m_reticleRenderer.material.color;
 
+        m_missileStatus = GameObject.Find("MissileStatus").GetComponent<Text>();
+        m_missilesLeft = GameObject.Find("MissileCount").GetComponent<Text>();
+        m_oldMissileTextColor = m_missileStatus.color;
 	}
-		
 
 
+    public void SetTarget(Transform transform)
+    {
+        int i = m_targets.FindIndex(x => x == transform);
+        if(i != -1)
+            m_target = i;
+    }
 
 	void Update () 
     {
@@ -79,8 +93,18 @@ public class Player : MonoBehaviour {
             if (m_missileMode == true)
             {
                 m_reticle.gameObject.SetActive(true);
+                m_missileStatus.color = Color.red;
+                m_missileStatus.text = "Missile Status: Armed";
+                m_missilesLeft.color = Color.red;
+
             }
-            else m_reticle.gameObject.SetActive(false);
+            else
+            {
+                m_reticle.gameObject.SetActive(false);
+                m_missileStatus.color = m_oldMissileTextColor;
+                m_missileStatus.text = "Missile Status: Disarmed";
+                m_missilesLeft.color = m_oldMissileTextColor;
+            }
         }
 
         if (m_missileMode)
@@ -112,9 +136,12 @@ public class Player : MonoBehaviour {
             m_launchAuthorised.gameObject.SetActive(false);
         }
 
-        if (Input.GetButton("Fire1") && m_missileLastFired > MissileCooldown && m_isLaunchAuthorised)
+        if (Input.GetButton("Fire1") && m_missileLastFired > MissileCooldown && m_isLaunchAuthorised && m_missileCount > 0)
         {
             FireMissile();
+            m_missileCount--;
+            m_missilesLeft.text = "Missiles Remaining: " + 
+                m_missileCount.ToString();
             m_missileLastFired = 0;
         }
         m_missileLastFired += Time.deltaTime;
@@ -139,15 +166,15 @@ public class Player : MonoBehaviour {
         transform.position += transform.forward * m_velocity;
 
         // DEBUG 
-        GameObject.Find("TargetValue").GetComponent<Text>().text =
-            m_target == -1 ? "None" : m_targets[m_target].gameObject.name +
+        GameObject.Find("TargetStatus").GetComponent<Text>().text =
+            m_target == -1 ? "No Target" : m_targets[m_target].gameObject.name +
                 " (" + (m_targets[m_target].transform.position - transform.position).magnitude + ")";
 
 		if (GetComponent<Target>().Health < 0)
 		{
 			GameObject explosion = (GameObject)Instantiate(m_explosionPrefab);
 			explosion.GetComponent<Transform>().position = transform.position;
-			GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().UnregisterTarget(this.gameObject.transform);
+			UnregisterTarget(this.gameObject.transform);
 			Time.timeScale = 0;
 			HUD.gameObject.AddComponent<GameOver>();
 			Destroy(gameObject, 0);

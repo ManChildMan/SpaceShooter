@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class ScoreScript : MonoBehaviour {
+public class Score : MonoBehaviour {
 
 	int score = 0;
 	Text scoreDisplay;
@@ -23,7 +23,7 @@ public class ScoreScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		scoreDisplay.text = "Score = " + score.ToString ();
+		scoreDisplay.text = "Score: " + score.ToString ();
 	}
 
 	public int getHighScore()

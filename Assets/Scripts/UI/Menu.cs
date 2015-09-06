@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MenuScript : MonoBehaviour {
+public class Menu : MonoBehaviour {
 
 	void OnGUI()
 	{

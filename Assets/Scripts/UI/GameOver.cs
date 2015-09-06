@@ -10,7 +10,7 @@ public class GameOver : MonoBehaviour {
 		int highScoreDisplay;
 
 		GameObject ScoreCounter = GameObject.Find ("ScoreCounter");
-		ScoreScript scoreScript = ScoreCounter.GetComponent<ScoreScript> ();
+		Score scoreScript = ScoreCounter.GetComponent<Score> ();
 		highScoreDisplay = scoreScript.getHighScore();
 
 		GUI.Label(new Rect(
