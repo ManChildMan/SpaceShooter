@@ -23,20 +23,24 @@ public class Player : MonoBehaviour {
     private int m_target = -1;
     private UnityEngine.Object m_missile;
     private UnityEngine.Object m_indicator;
+	private UnityEngine.Object m_explosionPrefab;
     private Transform m_reticle;
     private Transform m_launchAuthorised;
     private MeshRenderer m_reticleRenderer;
     private Color m_reticleDefaultColor;
 
+	private GameObject HUD;
+
     void Awake()
     {
         m_missile = Resources.Load("Missile");
         m_indicator = Resources.Load("TargetIndicator");
+		m_explosionPrefab = Resources.Load("LargeExplosion");
     }
 
 	void Start () 
     {
-
+		HUD = GameObject.FindGameObjectWithTag ("HUD");
 
         m_launchAuthorised = GameObject.Find("LaunchAuthorised").transform;
         m_launchAuthorised.gameObject.SetActive(false);
@@ -53,6 +57,12 @@ public class Player : MonoBehaviour {
 
 	void Update () 
     {
+		if (Input.GetButtonDown("Pause"))
+		{
+			Time.timeScale = 0.0f;
+			HUD.gameObject.AddComponent<Pause>();
+		}
+
         if (Input.GetButtonDown("CycleTargets"))
         {
             CycleTargets();
@@ -132,6 +142,16 @@ public class Player : MonoBehaviour {
         GameObject.Find("TargetValue").GetComponent<Text>().text =
             m_target == -1 ? "None" : m_targets[m_target].gameObject.name +
                 " (" + (m_targets[m_target].transform.position - transform.position).magnitude + ")";
+
+		if (GetComponent<Target>().Health < 0)
+		{
+			GameObject explosion = (GameObject)Instantiate(m_explosionPrefab);
+			explosion.GetComponent<Transform>().position = transform.position;
+			GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().UnregisterTarget(this.gameObject.transform);
+			Time.timeScale = 0;
+			HUD.gameObject.AddComponent<GameOver>();
+			Destroy(gameObject, 0);
+		}
 	}
 
     public void RegisterTarget(Transform transform)
