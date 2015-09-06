@@ -9,6 +9,19 @@ public class Pause : MonoBehaviour {
 	{
 		const int buttonWidth = 120;
 		const int buttonHeight = 60;
+
+		int highScoreDisplay;
+		
+		GameObject ScoreCounter = GameObject.Find ("ScoreCounter");
+		ScoreScript scoreScript = ScoreCounter.GetComponent<ScoreScript> ();
+		highScoreDisplay = scoreScript.getHighScore();
+
+		GUI.Label(new Rect(
+			Screen.width / 2 - (buttonWidth / 2),
+			(1 * Screen.height / 3.5f) - (buttonHeight / 2), 
+			buttonWidth,
+			buttonHeight),
+		          "High Score = " + highScoreDisplay);
 		
 		if (
 			GUI.Button(

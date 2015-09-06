@@ -7,6 +7,11 @@ public class GameOver : MonoBehaviour {
 	{
 		const int buttonWidth = 120;
 		const int buttonHeight = 60;
+		int highScoreDisplay;
+
+		GameObject ScoreCounter = GameObject.Find ("ScoreCounter");
+		ScoreScript scoreScript = ScoreCounter.GetComponent<ScoreScript> ();
+		highScoreDisplay = scoreScript.getHighScore();
 
 		GUI.Label(new Rect(
 			Screen.width / 2 - (buttonWidth / 3),
@@ -14,6 +19,13 @@ public class GameOver : MonoBehaviour {
 			buttonWidth,
 			buttonHeight),
 			"Game Over");
+
+		GUI.Label(new Rect(
+			Screen.width / 2 - (buttonWidth / 3),
+			(1 * Screen.height / 3.5f), 
+			buttonWidth,
+			buttonHeight),
+		    "High Score =" + highScoreDisplay);
 		
 		if (
 			GUI.Button(
