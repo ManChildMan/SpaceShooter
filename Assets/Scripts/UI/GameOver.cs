@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class GameOver : MonoBehaviour {
 
@@ -12,6 +13,7 @@ public class GameOver : MonoBehaviour {
 		GameObject ScoreCounter = GameObject.Find ("ScoreCounter");
 		Score scoreScript = ScoreCounter.GetComponent<Score> ();
 		highScoreDisplay = scoreScript.getHighScore();
+        GameObject.Find("HighScore").GetComponent<Text>().text = "High Score: " + (scoreScript.getHighScore() * 100).ToString();
 
 		GUI.Label(new Rect(
 			Screen.width / 2 - (buttonWidth / 3),

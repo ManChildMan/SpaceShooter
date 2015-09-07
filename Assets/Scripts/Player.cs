@@ -34,7 +34,7 @@ public class Player : MonoBehaviour {
     private Text m_missilesLeft;
     private Color m_oldMissileTextColor;
     private int m_missileCount = 6;
-
+    private AudioSource m_audio;
 	private GameObject HUD;
 
     void Awake()
@@ -42,6 +42,7 @@ public class Player : MonoBehaviour {
         m_missile = Resources.Load("Missile");
         m_indicator = Resources.Load("TargetIndicator");
 		m_explosionPrefab = Resources.Load("LargeExplosion");
+        m_audio = GetComponent<AudioSource>();
     }
 
 	void Start () 
@@ -162,6 +163,12 @@ public class Player : MonoBehaviour {
         m_velocity += velInput * VelocityModifier * Time.deltaTime;
         m_velocity = Mathf.Clamp(m_velocity, MinSpeed, MaxSpeed);
         Velocity = m_velocity;
+
+        if (Velocity > 0)
+        {
+            if(!m_audio.isPlaying) m_audio.Play();
+        }
+        else m_audio.Stop();
 
         transform.position += transform.forward * m_velocity;
 
